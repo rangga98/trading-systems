@@ -1,0 +1,203 @@
+# OHLCV Data API Contract
+# Base URL: /api/v1
+
+paths:
+  /stocks/{ticker}/ohlcv:
+    parameters:
+      - name: ticker
+        in: path
+        required: true
+        schema:
+          type: string
+          example: BBCA.JK
+
+    get:
+      summary: Get OHLCV data for a stock
+      description: Returns historical price data with optional date filtering
+      parameters:
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Start date (inclusive)
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: End date (inclusive)
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [daily, weekly, monthly]
+            default: daily
+          description: Data aggregation (weekly/monthly aggregates daily data)
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 1000
+            maximum: 5000
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        200:
+          description: OHLCV data list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticker:
+                    type: string
+                  timeframe:
+                    type: string
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OHLCVResponse'
+        404:
+          description: Stock not found
+
+  /stocks/{ticker}/ohlcv/import:
+    parameters:
+      - name: ticker
+        in: path
+        required: true
+        schema:
+          type: string
+          example: BBCA.JK
+
+    post:
+      summary: Import OHLCV data from yfinance
+      description: |
+        Fetches historical OHLCV data from Yahoo Finance and stores in database.
+        Returns import job status for tracking progress.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OHLCVImportRequest'
+      responses:
+        202:
+          description: Import job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJobResponse'
+        400:
+          description: Invalid date range or conflict resolution option
+        404:
+          description: Stock not found
+        409:
+          description: Data exists for range (with conflict resolution options)
+        502:
+          description: yfinance unavailable
+
+  /import-jobs/{job_id}:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Get import job status
+      responses:
+        200:
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJobResponse'
+        404:
+          description: Job not found
+
+components:
+  schemas:
+    OHLCVResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        open:
+          type: string
+          description: Decimal as string for precision
+        high:
+          type: string
+        low:
+          type: string
+        close:
+          type: string
+        adj_close:
+          type: string
+        volume:
+          type: integer
+
+    OHLCVImportRequest:
+      type: object
+      required:
+        - start_date
+        - end_date
+      properties:
+        start_date:
+          type: string
+          format: date
+          example: "2020-01-01"
+        end_date:
+          type: string
+          format: date
+          example: "2024-12-31"
+        on_conflict:
+          type: string
+          enum: [skip, overwrite, merge]
+          default: skip
+          description: |
+            skip: Skip existing dates
+            overwrite: Replace all data in range
+            merge: Update only if new data differs
+
+    ImportJobResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        ticker:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        records_imported:
+          type: integer
+          nullable: true
+        total_records:
+          type: integer
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

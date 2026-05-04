@@ -1,0 +1,157 @@
+# Stock API Contract
+# Base URL: /api/v1
+
+paths:
+  /stocks:
+    get:
+      summary: List all imported stocks
+      description: Returns paginated list of stocks with OHLCV data availability
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Filter by ticker or name (case-insensitive)
+        - name: has_data
+          in: query
+          schema:
+            type: boolean
+          description: Filter stocks with/without OHLCV data
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: List of stocks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StockResponse'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+
+    post:
+      summary: Import a new stock
+      description: Fetch stock metadata from yfinance and create record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockCreateRequest'
+      responses:
+        201:
+          description: Stock created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockResponse'
+        400:
+          description: Invalid ticker or already exists
+        404:
+          description: Ticker not found on yfinance
+        502:
+          description: yfinance unavailable
+
+  /stocks/{ticker}:
+    parameters:
+      - name: ticker
+        in: path
+        required: true
+        schema:
+          type: string
+          example: BBCA.JK
+
+    get:
+      summary: Get stock details
+      responses:
+        200:
+          description: Stock details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockResponse'
+        404:
+          description: Stock not found
+
+    delete:
+      summary: Soft delete stock and its data
+      description: Sets deleted_at timestamp; use ?hard=true for permanent delete
+      parameters:
+        - name: hard
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        204:
+          description: Deleted successfully
+        404:
+          description: Stock not found
+
+components:
+  schemas:
+    StockCreateRequest:
+      type: object
+      required:
+        - ticker
+      properties:
+        ticker:
+          type: string
+          example: BBCA.JK
+          pattern: '^[A-Z0-9]+\.JK$'
+          description: IDX ticker with .JK suffix
+
+    StockResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ticker:
+          type: string
+          example: BBCA.JK
+        name:
+          type: string
+          example: Bank Central Asia Tbk
+        sector:
+          type: string
+          example: Financials
+        has_data:
+          type: boolean
+          description: True if OHLCV data exists
+        data_count:
+          type: integer
+          description: Number of OHLCV records
+        date_range:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

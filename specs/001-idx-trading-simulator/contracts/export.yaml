@@ -1,0 +1,155 @@
+# Export API Contract
+# Base URL: /api/v1
+
+paths:
+  /backtest-results/{result_id}/export/csv:
+    parameters:
+      - name: result_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Export backtest results to CSV
+      description: |
+        Downloads backtest result as CSV file containing:
+        - Summary metrics (header rows)
+        - Individual trade details (data rows)
+      parameters:
+        - name: include_summary
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Include summary header rows
+        - name: include_equity_curve
+          in: query
+          schema:
+            type: boolean
+            default: false
+          description: Include equity curve as separate sheet/file
+      responses:
+        200:
+          description: CSV file download
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+              headers:
+                Content-Disposition:
+                  schema:
+                    type: string
+                  example: 'attachment; filename="backtest_bbcajk_20200102_20241230.csv"'
+        404:
+          description: Result not found
+        409:
+          description: Result status is not COMPLETED
+
+  /backtest-results/{result_id}/export/json:
+    parameters:
+      - name: result_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Export backtest results to JSON
+      description: Complete backtest data including config, trades, and equity curve
+      responses:
+        200:
+          description: JSON export
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestExportJSON'
+        404:
+          description: Result not found
+        409:
+          description: Result status is not COMPLETED
+
+components:
+  schemas:
+    BacktestExportJSON:
+      type: object
+      properties:
+        export_info:
+          type: object
+          properties:
+            exported_at:
+              type: string
+              format: date-time
+            version:
+              type: string
+              example: "1.0"
+        configuration:
+          $ref: './backtest.yaml#/components/schemas/BacktestConfigResponse'
+        result:
+          $ref: './backtest.yaml#/components/schemas/BacktestResultResponse'
+        trades:
+          type: array
+          items:
+            $ref: './backtest.yaml#/components/schemas/TradeResponse'
+        summary_metrics:
+          type: object
+          properties:
+            total_trades:
+              type: integer
+            winning_trades:
+              type: integer
+            losing_trades:
+              type: integer
+            win_rate:
+              type: number
+            avg_win:
+              type: string
+            avg_loss:
+              type: string
+            profit_factor:
+              type: number
+            total_return:
+              type: string
+            max_drawdown:
+              type: string
+            max_drawdown_pct:
+              type: number
+            sharpe_ratio:
+              type: number
+            sortino_ratio:
+              type: number
+
+# CSV Format Specification
+#
+# CSV Structure (include_summary=true):
+# Row 1: "Backtest Export for {ticker}"
+# Row 2: "Configuration: {config_name}"
+# Row 3: "Date Range: {start} to {end}"
+# Row 4: empty
+# Row 5: Summary Headers (Metric, Value)
+# Row 6-N: Summary Values
+# Row N+1: empty
+# Row N+2: Trades Headers
+# Row N+3: Trade data columns...
+#
+# Trades CSV Columns:
+# - trade_number
+# - entry_date
+# - entry_price
+# - exit_date
+# - exit_price
+# - position_size
+# - position_type
+# - pnl
+# - pnl_pct
+# - exit_reason
+# - days_held
+#
+# Notes:
+# - All monetary values in IDR (Indonesian Rupiah)
+# - All percentages as decimal (0.10 = 10%)
+# - Dates in ISO 8601 format (YYYY-MM-DD)
+# - File encoding: UTF-8 with BOM for Excel compatibility
