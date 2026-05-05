@@ -1,15 +1,17 @@
+import { Suspense, lazy } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom'
 import { queryClient } from './services/api'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
-// Pages
-import { StockListPage } from './pages/StockImport/StockListPage'
-import { StockImportPage } from './pages/StockImport/StockImportPage'
-import { OHLCVViewPage } from './pages/StockImport/OHLCVViewPage'
-import { ChartViewPage } from './pages/ChartView/ChartViewPage'
-import { BacktestRunPage } from './pages/Backtest/BacktestRunPage'
-import { BacktestResultsPage } from './pages/Backtest/BacktestResultsPage'
-import { BacktestDetailPage } from './pages/Backtest/BacktestDetailPage'
+// Pages - Lazy loaded for bundle optimization
+const StockListPage = lazy(() => import('./pages/StockImport/StockListPage').then(m => ({ default: m.StockListPage })))
+const StockImportPage = lazy(() => import('./pages/StockImport/StockImportPage').then(m => ({ default: m.StockImportPage })))
+const OHLCVViewPage = lazy(() => import('./pages/StockImport/OHLCVViewPage').then(m => ({ default: m.OHLCVViewPage })))
+const ChartViewPage = lazy(() => import('./pages/ChartView/ChartViewPage').then(m => ({ default: m.ChartViewPage })))
+const BacktestRunPage = lazy(() => import('./pages/Backtest/BacktestRunPage').then(m => ({ default: m.BacktestRunPage })))
+const BacktestResultsPage = lazy(() => import('./pages/Backtest/BacktestResultsPage').then(m => ({ default: m.BacktestResultsPage })))
+const BacktestDetailPage = lazy(() => import('./pages/Backtest/BacktestDetailPage').then(m => ({ default: m.BacktestDetailPage })))
 
 // Placeholder pages for future stories
 const Dashboard = () => (
@@ -79,20 +81,35 @@ function App() {
 
           {/* Main Content */}
           <main className="flex-1 p-6 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/stocks" element={<StockListPage />} />
-              <Route path="/stocks/import" element={<StockImportPage />} />
-              <Route path="/stocks/:ticker" element={<OHLCVViewPage />} />
-              <Route path="/chart" element={<ChartViewPage />} />
-              <Route path="/backtest/run" element={<BacktestRunPage />} />
-<Route path="/backtest/results" element={<BacktestResultsPage />} />
-<Route path="/backtest/results/:resultId" element={<BacktestDetailPage />} />
-            </Routes>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoading />}>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/stocks" element={<StockListPage />} />
+                  <Route path="/stocks/import" element={<StockImportPage />} />
+                  <Route path="/stocks/:ticker" element={<OHLCVViewPage />} />
+                  <Route path="/chart" element={<ChartViewPage />} />
+                  <Route path="/backtest/run" element={<BacktestRunPage />} />
+                  <Route path="/backtest/results" element={<BacktestResultsPage />} />
+                  <Route path="/backtest/results/:resultId" element={<BacktestDetailPage />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
         </div>
       </BrowserRouter>
     </QueryClientProvider>
+  )
+}
+
+function PageLoading() {
+  return (
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="flex items-center gap-3">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <span className="text-muted-foreground">Memuat halaman...</span>
+      </div>
+    </div>
   )
 }
 

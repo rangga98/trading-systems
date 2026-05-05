@@ -36,13 +36,47 @@ apiClient.interceptors.response.use(
   }
 )
 
-// TanStack Query client
+// TanStack Query client with caching strategy
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 60 * 1000, // 1 minute default
+      gcTime: 10 * 60 * 1000, // 10 minutes cache lifetime
       retry: 1,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
     },
   },
 })
+
+// Query key patterns for cache invalidation
+export const queryKeys = {
+  stocks: {
+    all: ['stocks'] as const,
+    list: (limit: number, offset: number) => ['stocks', 'list', limit, offset] as const,
+    detail: (ticker: string) => ['stocks', 'detail', ticker] as const,
+    search: (query: string) => ['stocks', 'search', query] as const,
+  },
+  ohlcv: {
+    data: (ticker: string, timeframe: string) => ['ohlcv', ticker, timeframe] as const,
+  },
+  backtest: {
+    configs: ['backtest', 'configs'] as const,
+    config: (id: string) => ['backtest', 'config', id] as const,
+    results: ['backtest', 'results'] as const,
+    result: (id: string) => ['backtest', 'result', id] as const,
+  },
+  importJobs: {
+    all: ['importJobs'] as const,
+    detail: (id: string) => ['importJobs', id] as const,
+  },
+}
+
+// Cache invalidation helpers
+export const invalidateQueries = {
+  stocks: () => queryClient.invalidateQueries({ queryKey: ['stocks'] }),
+  ohlcv: (ticker: string) => queryClient.invalidateQueries({ queryKey: ['ohlcv', ticker] }),
+  backtestConfigs: () => queryClient.invalidateQueries({ queryKey: ['backtest', 'configs'] }),
+  backtestResults: () => queryClient.invalidateQueries({ queryKey: ['backtest', 'results'] }),
+  all: () => queryClient.invalidateQueries(),
+}

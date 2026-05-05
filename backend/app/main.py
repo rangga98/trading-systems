@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.core.logging import logger
+from app.core.middleware import RequestLoggingMiddleware
 from app.api import stocks, ohlcv, import_jobs, backtest, export
 
 
@@ -25,13 +26,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Request logging middleware
+app.add_middleware(RequestLoggingMiddleware)
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["*"],
+    expose_headers=["X-Request-Duration"],
 )
 
 # Include routers
@@ -54,5 +59,13 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy"}
+    """Health check endpoint for monitoring.
+
+    Returns service status and basic metrics.
+    """
+    return {
+        "status": "healthy",
+        "service": settings.APP_NAME,
+        "version": "0.1.0",
+        "timestamp": __import__('datetime').datetime.now(__import__('zoneinfo').ZoneInfo(settings.TIMEZONE)).isoformat(),
+    }
