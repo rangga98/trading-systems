@@ -25,7 +25,9 @@ COPY alembic/ ./alembic/
 # Set environment
 ENV PYTHONPATH=/app
 ENV TZ=Asia/Jakarta
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -63,3 +63,6 @@ pythonpath = ["app"]
 
 [tool.coverage.run]
 source = ["app"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

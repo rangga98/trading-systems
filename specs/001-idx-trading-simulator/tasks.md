@@ -17,13 +17,13 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 [P] Create backend project structure with `backend/app/` directories (models, schemas, services, api, core)
-- [ ] T002 [P] Create frontend project structure with `frontend/src/` directories (components, pages, services, stores, types)
-- [ ] T003 Initialize backend with `pyproject.toml`, FastAPI, SQLAlchemy 2.0, asyncpg, yfinance, pandas, pydantic, pytest
-- [ ] T004 Initialize frontend with Vite, React 18, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, Zustand, lightweight-charts
-- [ ] T005 [P] Configure backend linting (ruff) and formatting (ruff format)
-- [ ] T006 [P] Configure frontend linting (ESLint) and formatting (Prettier)
-- [ ] T007 Create root `docker-compose.yml` with PostgreSQL, backend, and frontend services
+- [x] T001 [P] Create backend project structure with `backend/app/` directories (models, schemas, services, api, core)
+- [x] T002 [P] Create frontend project structure with `frontend/src/` directories (components, pages, services, stores, types)
+- [x] T003 Initialize backend with `pyproject.toml`, FastAPI, SQLAlchemy 2.0, asyncpg, yfinance, pandas, pydantic, pytest
+- [x] T004 Initialize frontend with Vite, React 18, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, Zustand, lightweight-charts
+- [x] T005 [P] Configure backend linting (ruff) and formatting (ruff format)
+- [x] T006 [P] Configure frontend linting (ESLint) and formatting (Prettier)
+- [x] T007 Create root `docker-compose.yml` with PostgreSQL, backend, and frontend services
 
 ---
 
@@ -35,18 +35,18 @@
 
 ### Backend Foundation
 
-- [ ] T008 Create `backend/app/config.py` with Pydantic settings (DATABASE_URL, yfinance config, timezone)
-- [ ] T009 Create `backend/app/database.py` with async SQLAlchemy engine, session, and base model with audit columns
-- [ ] T010 Create `backend/app/core/exceptions.py` with custom exception classes (StockNotFound, ValidationError, etc.)
-- [ ] T011 Create `backend/app/core/logging.py` with structured logging configuration
-- [ ] T012 Create `backend/alembic.ini` and initialize migration environment
+- [x] T008 Create `backend/app/config.py` with Pydantic settings (DATABASE_URL, yfinance config, timezone)
+- [x] T009 Create `backend/app/database.py` with async SQLAlchemy engine, session, and base model with audit columns
+- [x] T010 Create `backend/app/core/exceptions.py` with custom exception classes (StockNotFound, ValidationError, etc.)
+- [x] T011 Create `backend/app/core/logging.py` with structured logging configuration
+- [x] T012 Create `backend/alembic.ini` and initialize migration environment
 
 ### Frontend Foundation
 
-- [ ] T013 Create `frontend/src/services/api.ts` with Axios instance and TanStack Query client setup
-- [ ] T014 Create `frontend/src/stores/appStore.ts` with Zustand for global UI state
-- [ ] T015 Create `frontend/src/types/index.ts` with shared TypeScript interfaces matching API schemas
-- [ ] T016 Configure Tailwind CSS with custom colors and shadcn/ui theme
+- [x] T013 Create `frontend/src/services/api.ts` with Axios instance and TanStack Query client setup
+- [x] T014 Create `frontend/src/stores/appStore.ts` with Zustand for global UI state
+- [x] T015 Create `frontend/src/types/index.ts` with shared TypeScript interfaces matching API schemas
+- [x] T016 Configure Tailwind CSS with custom colors and shadcn/ui theme
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -67,32 +67,32 @@
 
 ### Backend Implementation - User Story 1
 
-- [ ] T021 [P] [US1] Create `Stock` model in `backend/app/models/stock.py` with audit columns and soft delete
-- [ ] T022 [P] [US1] Create `OHLCVData` model in `backend/app/models/ohlcv.py` with NUMERIC(19,4) prices, indexes on (stock_id, date)
-- [ ] T023 [US1] Create Alembic migration `001_create_stocks_and_ohlcv_tables.py` (depends on T021, T022)
-- [ ] T024 [P] [US1] Create `StockSchema` Pydantic schemas in `backend/app/schemas/stock.py`
-- [ ] T025 [P] [US1] Create `OHLCVSchema` Pydantic schemas in `backend/app/schemas/ohlcv.py`
-- [ ] T026 [US1] Implement `YFinanceClient` in `backend/app/services/yfinance_client.py` with rate limiting (depends on T017)
-- [ ] T027 [US1] Implement `StockService` in `backend/app/services/stock_service.py` with CRUD operations
-- [ ] T028 [US1] Implement `OHLCVService` in `backend/app/services/ohlcv_service.py` with import logic and conflict handling (depends on T026)
-- [ ] T029 [US1] Implement stocks API routes in `backend/app/api/stocks.py` with list, get, create, delete endpoints
-- [ ] T030 [US1] Implement OHLCV API routes in `backend/app/api/ohlcv.py` with get data and import endpoints (depends on T028)
-- [ ] T031 [US1] Add import job tracking table and endpoints for async progress feedback
-- [ ] T032 [US1] Add IDX-specific ticker validation (.JK suffix) in schemas
-- [ ] T033 [US1] Add WIB timezone handling in datetime utilities
-- [ ] T034 [US1] Register routes in `backend/app/main.py` with `/api/v1` prefix
+- [x] T021 [P] [US1] Create `Stock` model in `backend/app/models/stock.py` with audit columns and soft delete
+- [x] T022 [P] [US1] Create `OHLCVData` model in `backend/app/models/ohlcv.py` with NUMERIC(19,4) prices, indexes on (stock_id, date)
+- [x] T023 [US1] Create Alembic migration `001_create_stocks_and_ohlcv_tables.py` (depends on T021, T022)
+- [x] T024 [P] [US1] Create `StockSchema` Pydantic schemas in `backend/app/schemas/stock.py`
+- [x] T025 [P] [US1] Create `OHLCVSchema` Pydantic schemas in `backend/app/schemas/ohlcv.py`
+- [x] T026 [US1] Implement `YFinanceClient` in `backend/app/services/yfinance_client.py` with rate limiting (depends on T017)
+- [x] T027 [US1] Implement `StockService` in `backend/app/services/stock_service.py` with CRUD operations
+- [x] T028 [US1] Implement `OHLCVService` in `backend/app/services/ohlcv_service.py` with import logic and conflict handling (depends on T026)
+- [x] T029 [US1] Implement stocks API routes in `backend/app/api/stocks.py` with list, get, create, delete endpoints
+- [x] T030 [US1] Implement OHLCV API routes in `backend/app/api/ohlcv.py` with get data and import endpoints (depends on T028)
+- [x] T031 [US1] Add import job tracking table and endpoints for async progress feedback
+- [x] T032 [US1] Add IDX-specific ticker validation (.JK suffix) in schemas
+- [x] T033 [US1] Add WIB timezone handling in datetime utilities
+- [x] T034 [US1] Register routes in `backend/app/main.py` with `/api/v1` prefix
 
 ### Frontend Implementation - User Story 1
 
-- [ ] T035 [P] [US1] Create stock API client functions in `frontend/src/services/stocks.ts`
-- [ ] T036 [P] [US1] Create OHLCV API client functions in `frontend/src/services/ohlcv.ts`
-- [ ] T037 [US1] Create `StockImportForm` component in `frontend/src/components/StockImportForm.tsx` with ticker validation
+- [x] T035 [P] [US1] Create stock API client functions in `frontend/src/services/stocks.ts`
+- [x] T036 [P] [US1] Create OHLCV API client functions in `frontend/src/services/ohlcv.ts`
+- [x] T037 [US1] Create `StockImportForm` component in `frontend/src/components/StockImportForm.tsx` with ticker validation
 - [ ] T038 [US1] Create `ImportProgress` component in `frontend/src/components/ImportProgress.tsx` for job status
-- [ ] T039 [US1] Create `DataTable` component in `frontend/src/components/DataTable.tsx` for viewing OHLCV data
-- [ ] T040 [US1] Create `StockListPage` in `frontend/src/pages/StockImport/StockListPage.tsx` with search/filter
-- [ ] T041 [US1] Create `StockImportPage` in `frontend/src/pages/StockImport/StockImportPage.tsx` with form
-- [ ] T042 [US1] Create `OHLCVViewPage` in `frontend/src/pages/StockImport/OHLCVViewPage.tsx` with data table
-- [ ] T043 [US1] Add routes in `frontend/src/App.tsx` for import flow
+- [x] T039 [US1] Create `DataTable` component in `frontend/src/components/DataTable.tsx` for viewing OHLCV data
+- [x] T040 [US1] Create `StockListPage` in `frontend/src/pages/StockImport/StockListPage.tsx` with search/filter
+- [x] T041 [US1] Create `StockImportPage` in `frontend/src/pages/StockImport/StockImportPage.tsx` with form
+- [x] T042 [US1] Create `OHLCVViewPage` in `frontend/src/pages/StockImport/OHLCVViewPage.tsx` with data table
+- [x] T043 [US1] Add routes in `frontend/src/App.tsx` for import flow
 
 **Checkpoint**: User Story 1 complete - users can import stocks and view OHLCV data
 
