@@ -56,7 +56,9 @@ export interface ImportJob {
   start_date: string
   end_date: string
   records_imported?: number
+  records_total?: number
   total_records?: number
+  progress?: number
   error_message?: string
   created_at: string
   updated_at: string

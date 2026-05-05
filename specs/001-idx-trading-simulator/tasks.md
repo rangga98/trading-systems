@@ -60,10 +60,10 @@
 
 ### Tests for User Story 1 ⚠️ (Write FIRST - must FAIL before implementation)
 
-- [ ] T017 [P] [US1] Write unit test for yfinance client in `backend/tests/unit/test_yfinance_client.py`
-- [ ] T018 [P] [US1] Write unit test for OHLCV import service in `backend/tests/unit/test_ohlcv_service.py`
-- [ ] T019 [P] [US1] Write integration test for stock import endpoint in `backend/tests/integration/test_stocks_api.py`
-- [ ] T020 [P] [US1] Write integration test for OHLCV import endpoint in `backend/tests/integration/test_ohlcv_api.py`
+- [x] T017 [P] [US1] Write unit test for yfinance client in `backend/tests/unit/test_yfinance_client.py`
+- [x] T018 [P] [US1] Write unit test for OHLCV import service in `backend/tests/unit/test_ohlcv_service.py`
+- [x] T019 [P] [US1] Write integration test for stock import endpoint in `backend/tests/integration/test_stocks_api.py`
+- [x] T020 [P] [US1] Write integration test for OHLCV import endpoint in `backend/tests/integration/test_ohlcv_api.py`
 
 ### Backend Implementation - User Story 1
 
@@ -87,7 +87,7 @@
 - [x] T035 [P] [US1] Create stock API client functions in `frontend/src/services/stocks.ts`
 - [x] T036 [P] [US1] Create OHLCV API client functions in `frontend/src/services/ohlcv.ts`
 - [x] T037 [US1] Create `StockImportForm` component in `frontend/src/components/StockImportForm.tsx` with ticker validation
-- [ ] T038 [US1] Create `ImportProgress` component in `frontend/src/components/ImportProgress.tsx` for job status
+- [x] T038 [US1] Create `ImportProgress` component in `frontend/src/components/ImportProgress.tsx` for job status
 - [x] T039 [US1] Create `DataTable` component in `frontend/src/components/DataTable.tsx` for viewing OHLCV data
 - [x] T040 [US1] Create `StockListPage` in `frontend/src/pages/StockImport/StockListPage.tsx` with search/filter
 - [x] T041 [US1] Create `StockImportPage` in `frontend/src/pages/StockImport/StockImportPage.tsx` with form
