@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { EquityCurveChart } from '../../components/Chart'
 import { TradeHistoryTable } from '../../components/BacktestForm'
+import { ExportButton } from '../../components/ExportButton'
 import { backtestApi } from '../../services/backtest'
 
 export function BacktestDetailPage() {
@@ -33,11 +34,16 @@ export function BacktestDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Detail Hasil Backtest</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          ID: {result.id}
-        </p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold">Detail Hasil Backtest</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            ID: {result.id}
+          </p>
+        </div>
+        {result.status === 'COMPLETED' && (
+          <ExportButton resultId={result.id} />
+        )}
       </div>
 
       {/* Metrics Cards */}

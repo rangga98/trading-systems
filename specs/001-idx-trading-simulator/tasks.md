@@ -202,22 +202,22 @@
 
 ### Tests for User Story 4 ⚠️ (Write FIRST)
 
-- [ ] T082 [P] [US4] Write unit test for CSV export service in `backend/tests/unit/test_export_service.py`
+- [x] T082 [P] [US4] Write unit test for CSV export service in `backend/tests/unit/test_export_service.py`
 
 ### Backend Implementation - User Story 4
 
-- [ ] T083 [US4] Implement `ExportService` in `backend/app/services/export_service.py` with CSV generation (depends on T082)
-- [ ] T084 [US4] Create CSV format with summary header and trades detail rows
-- [ ] T085 [US4] Implement export API routes in `backend/app/api/export.py` with CSV download endpoint
-- [ ] T086 [US4] Add JSON export endpoint for programmatic access
-- [ ] T087 [US4] Register export routes in `backend/app/main.py`
+- [x] T083 [US4] Implement `ExportService` in `backend/app/services/export_service.py` with CSV generation (depends on T082)
+- [x] T084 [US4] Create CSV format with summary header and trades detail rows
+- [x] T085 [US4] Implement export API routes in `backend/app/api/export.py` with CSV download endpoint
+- [x] T086 [US4] Add JSON export endpoint for programmatic access
+- [x] T087 [US4] Register export routes in `backend/app/main.py`
 
 ### Frontend Implementation - User Story 4
 
-- [ ] T088 [P] [US4] Create export API client functions in `frontend/src/services/export.ts`
-- [ ] T089 [US4] Create `ExportButton` component in `frontend/src/components/ExportButton.tsx` with format selector
-- [ ] T090 [US4] Add export functionality to `BacktestDetailPage`
-- [ ] T091 [US4] Implement CSV download with proper filename (e.g., `backtest_bbcajk_20200102_20241230.csv`)
+- [x] T088 [P] [US4] Create export API client functions in `frontend/src/services/export.ts`
+- [x] T089 [US4] Create `ExportButton` component in `frontend/src/components/ExportButton.tsx` with format selector
+- [x] T090 [US4] Add export functionality to `BacktestDetailPage`
+- [x] T091 [US4] Implement CSV download with proper filename (e.g., `backtest_bbcajk_20200102_20241230.csv`)
 
 **Checkpoint**: User Story 4 complete - users can export backtest results to CSV
 
