@@ -22,41 +22,30 @@ async def get_ohlcv_data(
     end_date: date | None = Query(None, description="End date (inclusive)"),
     timeframe: str = Query("daily", pattern=r"^(daily|weekly|monthly)$"),
     limit: int = Query(1000, ge=1, le=5000),
+    offset: int = Query(0, ge=0),
     session: AsyncSession = Depends(get_db),
 ):
-    """Get OHLCV data for a stock with optional date filtering."""
+    """Get OHLCV data for a stock with optional date filtering and timeframe aggregation."""
     # Get stock
     stock_service = StockService(session)
     stock = await stock_service.get_by_ticker(ticker)
     
-    # Get OHLCV data
+    # Get OHLCV data with timeframe aggregation
     ohlcv_service = OHLCVService(session)
-    data = await ohlcv_service.get_data(
+    result = await ohlcv_service.get_data_with_timeframe(
         stock_id=stock.id,
         start_date=start_date,
         end_date=end_date,
+        timeframe=timeframe,  # type: ignore
         limit=limit,
+        offset=offset,
     )
-    
-    # Convert to response format
-    data_points = [
-        {
-            "date": d.date,
-            "open": str(d.open),
-            "high": str(d.high),
-            "low": str(d.low),
-            "close": str(d.close),
-            "adj_close": str(d.adj_close),
-            "volume": d.volume,
-        }
-        for d in data
-    ]
     
     return OHLCVResponse(
         ticker=ticker,
-        timeframe=timeframe,
-        count=len(data_points),
-        data=data_points,
+        timeframe=result["timeframe"],
+        count=result["count"],
+        data=result["data"],
     )
 
 

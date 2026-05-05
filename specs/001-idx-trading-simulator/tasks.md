@@ -106,26 +106,26 @@
 
 ### Tests for User Story 2 ⚠️ (Write FIRST)
 
-- [ ] T044 [P] [US2] Write integration test for OHLCV data aggregation by timeframe in backend
+- [x] T044 [P] [US2] Write integration test for OHLCV data aggregation by timeframe in backend
 
 ### Backend Implementation - User Story 2
 
-- [ ] T045 [US2] Extend `OHLCVService` in `backend/app/services/ohlcv_service.py` with timeframe aggregation (daily→weekly→monthly)
-- [ ] T046 [US2] Add timeframe parameter support to `backend/app/api/ohlcv.py` endpoints
-- [ ] T047 [US2] Optimize OHLCV queries with pagination for large datasets (1000+ rows)
+- [x] T045 [US2] Extend `OHLCVService` in `backend/app/services/ohlcv_service.py` with timeframe aggregation (daily→weekly→monthly)
+- [x] T046 [US2] Add timeframe parameter support to `backend/app/api/ohlcv.py` endpoints
+- [x] T047 [US2] Optimize OHLCV queries with pagination for large datasets (1000+ rows)
 
 ### Frontend Implementation - User Story 2
 
-- [ ] T048 [US2] Install and configure `lightweight-charts` package in frontend
-- [ ] T049 [US2] Create `CandlestickChart` component in `frontend/src/components/Chart/CandlestickChart.tsx` with lightweight-charts
-- [ ] T050 [US2] Add chart configuration: price scale, time scale, candlestick series
-- [ ] T051 [US2] Implement zoom and pan handling with mouse/trackpad
-- [ ] T052 [US2] Create timeframe selector component in `frontend/src/components/Chart/TimeframeSelector.tsx`
-- [ ] T053 [US2] Implement timeframe switching logic with data refetching
-- [ ] T054 [US2] Add loading states and error handling for chart data
-- [ ] T055 [US2] Create `ChartViewPage` in `frontend/src/pages/ChartView/ChartViewPage.tsx` with ticker selector and chart
-- [ ] T056 [US2] Add responsive chart sizing for different screen widths
-- [ ] T057 [US2] Add route for chart view in `frontend/src/App.tsx`
+- [x] T048 [US2] Install and configure `lightweight-charts` package in frontend
+- [x] T049 [US2] Create `CandlestickChart` component in `frontend/src/components/Chart/CandlestickChart.tsx` with lightweight-charts
+- [x] T050 [US2] Add chart configuration: price scale, time scale, candlestick series
+- [x] T051 [US2] Implement zoom and pan handling with mouse/trackpad
+- [x] T052 [US2] Create timeframe selector component in `frontend/src/components/Chart/TimeframeSelector.tsx`
+- [x] T053 [US2] Implement timeframe switching logic with data refetching
+- [x] T054 [US2] Add loading states and error handling for chart data
+- [x] T055 [US2] Create `ChartViewPage` in `frontend/src/pages/ChartView/ChartViewPage.tsx` with ticker selector and chart
+- [x] T056 [US2] Add responsive chart sizing for different screen widths
+- [x] T057 [US2] Add route for chart view in `frontend/src/App.tsx`
 
 **Checkpoint**: User Story 2 complete - users can view interactive candlestick charts
 

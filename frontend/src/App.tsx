@@ -6,6 +6,7 @@ import { queryClient } from './services/api'
 import { StockListPage } from './pages/StockImport/StockListPage'
 import { StockImportPage } from './pages/StockImport/StockImportPage'
 import { OHLCVViewPage } from './pages/StockImport/OHLCVViewPage'
+import { ChartViewPage } from './pages/ChartView/ChartViewPage'
 
 // Placeholder pages for future stories
 const Dashboard = () => (
@@ -18,7 +19,6 @@ const Dashboard = () => (
     </p>
   </div>
 )
-const ChartView = () => <div className="p-4">Chart View (Phase 4)</div>
 const Backtest = () => <div className="p-4">Backtest (Phase 5)</div>
 
 function App() {
@@ -82,7 +82,7 @@ function App() {
               <Route path="/stocks" element={<StockListPage />} />
               <Route path="/stocks/import" element={<StockImportPage />} />
               <Route path="/stocks/:ticker" element={<OHLCVViewPage />} />
-              <Route path="/chart" element={<ChartView />} />
+              <Route path="/chart" element={<ChartViewPage />} />
               <Route path="/backtest" element={<Backtest />} />
             </Routes>
           </main>
