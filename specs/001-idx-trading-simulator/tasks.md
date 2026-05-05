@@ -139,56 +139,56 @@
 
 ### Tests for User Story 3 ⚠️ (Write FIRST)
 
-- [ ] T058 [P] [US3] Write unit test for backtest engine calculation accuracy in `backend/tests/unit/test_backtest_engine.py`
-- [ ] T059 [P] [US3] Write unit test for position sizing strategies in `backend/tests/unit/test_position_sizing.py`
-- [ ] T060 [P] [US3] Write integration test for backtest API endpoints in `backend/tests/integration/test_backtest_api.py`
+- [x] T058 [P] [US3] Write unit test for backtest engine calculation accuracy in `backend/tests/unit/test_backtest_engine.py`
+- [x] T059 [P] [US3] Write unit test for position sizing strategies in `backend/tests/unit/test_position_sizing.py`
+- [x] T060 [P] [US3] Write integration test for backtest API endpoints in `backend/tests/integration/test_backtest_api.py`
 
 ### Backend Implementation - User Story 3
 
-- [ ] T061 [P] [US3] Create `BacktestConfig` model in `backend/app/models/backtest_config.py`
-- [ ] T062 [P] [US3] Create `BacktestResult` model in `backend/app/models/backtest_result.py`
-- [ ] T063 [P] [US3] Create `Trade` model in `backend/app/models/trade.py`
-- [ ] T064 [US3] Create Alembic migration `002_create_backtest_tables.py` (depends on T061-T063)
-- [ ] T065 [P] [US3] Create `BacktestSchema` Pydantic schemas in `backend/app/schemas/backtest.py` with proper Decimal handling
-- [ ] T066 [US3] Implement `BacktestEngine` in `backend/app/services/backtest_engine.py` with:
+- [x] T061 [P] [US3] Create `BacktestConfig` model in `backend/app/models/backtest_config.py`
+- [x] T062 [P] [US3] Create `BacktestResult` model in `backend/app/models/backtest_result.py`
+- [x] T063 [P] [US3] Create `Trade` model in `backend/app/models/trade.py`
+- [x] T064 [US3] Create Alembic migration `002_create_backtest_tables.py` (depends on T061-T063)
+- [x] T065 [P] [US3] Create `BacktestSchema` Pydantic schemas in `backend/app/schemas/backtest.py` with proper Decimal handling
+- [x] T066 [US3] Implement `BacktestEngine` in `backend/app/services/backtest_engine.py` with:
   - Event-driven simulation loop
   - Portfolio tracking (cash, positions, equity)
   - Position sizing: FIXED_AMOUNT, FIXED_PCT, RISK_BASED
   - Stop loss and take profit logic
   - Buy-and-hold strategy implementation
   - Deterministic execution (same inputs = same outputs)
-- [ ] T067 [US3] Implement `MetricsCalculator` in `backend/app/services/metrics_calculator.py` for:
+- [x] T067 [US3] Implement `MetricsCalculator` in `backend/app/services/metrics_calculator.py` for:
   - Total P&L and return percentage
   - Win rate calculation
   - Max drawdown (absolute and percentage)
   - Sharpe ratio
   - Equity curve generation
-- [ ] T068 [US3] Implement `BacktestService` in `backend/app/services/backtest_service.py` with config CRUD and execution (depends on T066, T067)
-- [ ] T069 [US3] Implement backtest API routes in `backend/app/api/backtest.py` with:
+- [x] T068 [US3] Implement `BacktestService` in `backend/app/services/backtest_service.py` with config CRUD and execution (depends on T066, T067)
+- [x] T069 [US3] Implement backtest API routes in `backend/app/api/backtest.py` with:
   - CRUD for configurations
   - Execute endpoint (returns result ID)
   - Get result with trades endpoint
   - List results with filtering/sorting
-- [ ] T070 [US3] Add validation for money management parameters (stop_loss < take_profit, positive capital, etc.)
-- [ ] T071 [US3] Add backtest status tracking (PENDING, RUNNING, COMPLETED, FAILED) with error handling
-- [ ] T072 [US3] Register backtest routes in `backend/app/main.py`
+- [x] T070 [US3] Add validation for money management parameters (stop_loss < take_profit, positive capital, etc.)
+- [x] T071 [US3] Add backtest status tracking (PENDING, RUNNING, COMPLETED, FAILED) with error handling
+- [x] T072 [US3] Register backtest routes in `backend/app/main.py`
 
 ### Frontend Implementation - User Story 3
 
-- [ ] T073 [P] [US3] Create backtest API client functions in `frontend/src/services/backtest.ts`
-- [ ] T074 [US3] Create `BacktestConfigForm` component in `frontend/src/components/BacktestForm/BacktestConfigForm.tsx` with:
+- [x] T073 [P] [US3] Create backtest API client functions in `frontend/src/services/backtest.ts`
+- [x] T074 [US3] Create `BacktestConfigForm` component in `frontend/src/components/BacktestForm/BacktestConfigForm.tsx` with:
   - Strategy name input
   - Initial capital (Rp amount as string for precision)
   - Position sizing type selector and value input
   - Stop loss and take profit percentages
   - Date range picker
-- [ ] T075 [US3] Create `BacktestResultsTable` component in `frontend/src/components/BacktestForm/BacktestResultsTable.tsx` with sortable metrics
-- [ ] T076 [US3] Create `EquityCurveChart` component in `frontend/src/components/Chart/EquityCurveChart.tsx` using lightweight-charts
-- [ ] T077 [US3] Create `TradeHistoryTable` component in `frontend/src/components/BacktestForm/TradeHistoryTable.tsx`
-- [ ] T078 [US3] Create `BacktestRunPage` in `frontend/src/pages/Backtest/BacktestRunPage.tsx` with config form and run button
-- [ ] T079 [US3] Create `BacktestResultsPage` in `frontend/src/pages/Backtest/BacktestResultsPage.tsx` with results table and comparison
-- [ ] T080 [US3] Create `BacktestDetailPage` in `frontend/src/pages/Backtest/BacktestDetailPage.tsx` with equity curve and trade history
-- [ ] T081 [US3] Add backtest routes in `frontend/src/App.tsx`
+- [x] T075 [US3] Create `BacktestResultsTable` component in `frontend/src/components/BacktestForm/BacktestResultsTable.tsx` with sortable metrics
+- [x] T076 [US3] Create `EquityCurveChart` component in `frontend/src/components/Chart/EquityCurveChart.tsx` using lightweight-charts
+- [x] T077 [US3] Create `TradeHistoryTable` component in `frontend/src/components/BacktestForm/TradeHistoryTable.tsx`
+- [x] T078 [US3] Create `BacktestRunPage` in `frontend/src/pages/Backtest/BacktestRunPage.tsx` with config form and run button
+- [x] T079 [US3] Create `BacktestResultsPage` in `frontend/src/pages/Backtest/BacktestResultsPage.tsx` with results table and comparison
+- [x] T080 [US3] Create `BacktestDetailPage` in `frontend/src/pages/Backtest/BacktestDetailPage.tsx` with equity curve and trade history
+- [x] T081 [US3] Add backtest routes in `frontend/src/App.tsx`
 
 **Checkpoint**: User Story 3 complete - users can run backtests and view comprehensive results
 

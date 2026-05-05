@@ -7,6 +7,9 @@ import { StockListPage } from './pages/StockImport/StockListPage'
 import { StockImportPage } from './pages/StockImport/StockImportPage'
 import { OHLCVViewPage } from './pages/StockImport/OHLCVViewPage'
 import { ChartViewPage } from './pages/ChartView/ChartViewPage'
+import { BacktestRunPage } from './pages/Backtest/BacktestRunPage'
+import { BacktestResultsPage } from './pages/Backtest/BacktestResultsPage'
+import { BacktestDetailPage } from './pages/Backtest/BacktestDetailPage'
 
 // Placeholder pages for future stories
 const Dashboard = () => (
@@ -19,7 +22,6 @@ const Dashboard = () => (
     </p>
   </div>
 )
-const Backtest = () => <div className="p-4">Backtest (Phase 5)</div>
 
 function App() {
   return (
@@ -83,7 +85,9 @@ function App() {
               <Route path="/stocks/import" element={<StockImportPage />} />
               <Route path="/stocks/:ticker" element={<OHLCVViewPage />} />
               <Route path="/chart" element={<ChartViewPage />} />
-              <Route path="/backtest" element={<Backtest />} />
+              <Route path="/backtest/run" element={<BacktestRunPage />} />
+<Route path="/backtest/results" element={<BacktestResultsPage />} />
+<Route path="/backtest/results/:resultId" element={<BacktestDetailPage />} />
             </Routes>
           </main>
         </div>

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.core.logging import logger
-from app.api import stocks, ohlcv, import_jobs
+from app.api import stocks, ohlcv, import_jobs, backtest
 
 
 @asynccontextmanager
@@ -38,6 +38,7 @@ app.add_middleware(
 app.include_router(stocks.router, prefix=settings.API_V1_PREFIX)
 app.include_router(ohlcv.router, prefix=settings.API_V1_PREFIX)
 app.include_router(import_jobs.router, prefix=settings.API_V1_PREFIX)
+app.include_router(backtest.router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")
