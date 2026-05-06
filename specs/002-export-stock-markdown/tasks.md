@@ -24,8 +24,9 @@
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [x] T003 Implement Markdown table generation logic in `frontend/src/lib/export-utils.ts`
-- [x] T004 Implement multi-file download trigger with delay in `frontend/src/lib/export-utils.ts`
+- [x] T003 Implement Markdown generation logic for historical data table in `frontend/src/lib/export-utils.ts`
+- [x] T004 Implement async fetching of OHLCV data for each selected stock in `frontend/src/lib/export-utils.ts`
+- [x] T016 [US1] Update `generateStockMarkdown` to include the historical data table in `frontend/src/lib/export-utils.ts`
 - [x] T005 Update `frontend/src/components/DataTable.tsx` to support row selection (checkboxes, select all)
 - [x] T006 [P] Add selection state management support to `frontend/src/components/DataTable.tsx` via props
 

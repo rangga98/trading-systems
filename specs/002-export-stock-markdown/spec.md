@@ -38,7 +38,8 @@ As a user viewing a list of stocks, I want to select specific stocks and export 
 - **FR-001**: System MUST provide a way for users to select specific stocks (e.g., checkboxes).
 - **FR-002**: System MUST display an "Export" button prominently near the stock list, which is ONLY enabled when at least one stock is selected.
 - **FR-003**: System MUST generate a separate Markdown file for EACH selected stock, containing a formatted table of its data.
-- **FR-004**: System MUST include key data fields in the export: Symbol, Company Name, Current Price, Day Change (%), and Volume.
+- **FR-004**: System MUST include full historical data in the export: Tanggal (Date), Buka (Open), Tinggi (High), Rendah (Low), Tutup (Close), and Volume.
+- **FR-008**: System MUST fetch historical data from the backend for each selected stock before generating the Markdown file.
 - **FR-005**: System MUST trigger individual browser downloads for each generated `.md` file.
 - **FR-006**: The Markdown table MUST use standard GitHub Flavored Markdown (GFM) syntax for tables.
 - **FR-007**: System MUST escape special Markdown characters in data values to prevent table breakage.
