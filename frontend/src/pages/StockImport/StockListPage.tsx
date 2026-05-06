@@ -1,19 +1,42 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { stocksApi } from '../../services/stocks'
 import { DataTable } from '../../components/DataTable'
+import { StockExportButton } from '../../components/StockExportButton'
 import type { Stock } from '../../types'
 
 export function StockListPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
+  const [selectedStocksMap, setSelectedStocksMap] = useState<Map<string, Stock>>(new Map())
   const limit = 20
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['stocks', search, page],
     queryFn: () => stocksApi.getAll(search, undefined, limit, page * limit),
   })
+
+  const selectedIds = useMemo(() => new Set(selectedStocksMap.keys()), [selectedStocksMap])
+  const selectedStocks = useMemo(() => Array.from(selectedStocksMap.values()), [selectedStocksMap])
+
+  const handleSelectionChange = (newSelectedIds: Set<string>) => {
+    const nextMap = new Map(selectedStocksMap)
+    
+    // Items on current page
+    const currentItems = data?.items || []
+    
+    // For each item on current page, update its presence in the map
+    currentItems.forEach(item => {
+      if (newSelectedIds.has(item.id)) {
+        nextMap.set(item.id, item)
+      } else {
+        nextMap.delete(item.id)
+      }
+    })
+    
+    setSelectedStocksMap(nextMap)
+  }
 
   const columns = [
     {
@@ -59,12 +82,15 @@ export function StockListPage() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Daftar Saham</h1>
-        <Link
-          to="/stocks/import"
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-        >
-          + Impor Saham Baru
-        </Link>
+        <div className="flex gap-2">
+          <StockExportButton selectedStocks={selectedStocks} />
+          <Link
+            to="/stocks/import"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
+            + Impor Saham Baru
+          </Link>
+        </div>
       </div>
 
       <div className="flex gap-2">
@@ -87,6 +113,9 @@ export function StockListPage() {
             columns={columns}
             keyExtractor={(stock) => stock.id}
             emptyMessage="Tidak ada saham ditemukan"
+            selectable
+            selectedIds={selectedIds}
+            onSelectionChange={handleSelectionChange}
           />
 
           <div className="flex justify-between items-center pt-4">

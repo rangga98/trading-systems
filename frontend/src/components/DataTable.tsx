@@ -11,6 +11,9 @@ interface DataTableProps<T> {
   columns: Column<T>[]
   keyExtractor: (item: T) => string
   emptyMessage?: string
+  selectable?: boolean
+  selectedIds?: Set<string>
+  onSelectionChange?: (selectedIds: Set<string>) => void
 }
 
 export function DataTable<T>({
@@ -18,6 +21,9 @@ export function DataTable<T>({
   columns,
   keyExtractor,
   emptyMessage = 'Tidak ada data',
+  selectable = false,
+  selectedIds = new Set(),
+  onSelectionChange,
 }: DataTableProps<T>) {
   const [sortKey, setSortKey] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
@@ -31,6 +37,27 @@ export function DataTable<T>({
     }
   }
 
+  const handleSelectAll = (checked: boolean) => {
+    if (!onSelectionChange) return
+    if (checked) {
+      const allIds = new Set(data.map(keyExtractor))
+      onSelectionChange(allIds)
+    } else {
+      onSelectionChange(new Set())
+    }
+  }
+
+  const handleSelectRow = (id: string, checked: boolean) => {
+    if (!onSelectionChange) return
+    const nextSelected = new Set(selectedIds)
+    if (checked) {
+      nextSelected.add(id)
+    } else {
+      nextSelected.delete(id)
+    }
+    onSelectionChange(nextSelected)
+  }
+
   if (data.length === 0) {
     return (
       <div className="p-8 text-center text-muted-foreground border rounded-lg">
@@ -39,11 +66,23 @@ export function DataTable<T>({
     )
   }
 
+  const isAllSelected = data.length > 0 && data.every(item => selectedIds.has(keyExtractor(item)))
+
   return (
     <div className="overflow-x-auto border rounded-lg">
       <table className="w-full text-sm">
         <thead className="bg-muted">
           <tr>
+            {selectable && (
+              <th className="px-4 py-3 w-10">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  checked={isAllSelected}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+              </th>
+            )}
             {columns.map((col) => (
               <th
                 key={String(col.key)}
@@ -63,6 +102,16 @@ export function DataTable<T>({
         <tbody>
           {data.map((item) => (
             <tr key={keyExtractor(item)} className="border-t hover:bg-muted/50">
+              {selectable && (
+                <td className="px-4 py-3">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    checked={selectedIds.has(keyExtractor(item))}
+                    onChange={(e) => handleSelectRow(keyExtractor(item), e.target.checked)}
+                  />
+                </td>
+              )}
               {columns.map((col) => (
                 <td key={String(col.key)} className="px-4 py-3">
                   {col.render
