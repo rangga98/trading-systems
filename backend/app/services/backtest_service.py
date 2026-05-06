@@ -1,6 +1,6 @@
 """Backtest service for managing configurations and execution."""
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Sequence
 from uuid import UUID
@@ -235,6 +235,14 @@ class BacktestService:
             
             # Calculate metrics
             equity_curve = engine_result["equity_curve"]
+            # Convert date objects to strings for JSON serialization
+            equity_curve_serializable = [
+                {
+                    "date": p["date"].isoformat() if isinstance(p["date"], date) else p["date"],
+                    "equity": float(p["equity"]),
+                }
+                for p in equity_curve
+            ]
             metrics = MetricsCalculator.calculate_metrics(
                 trades=[t for t in trades],  # Already Trade objects
                 equity_curve=equity_curve,
@@ -251,7 +259,7 @@ class BacktestService:
             result.max_drawdown = metrics["max_drawdown"]
             result.max_drawdown_pct = metrics["max_drawdown_pct"]
             result.sharpe_ratio = metrics["sharpe_ratio"]
-            result.equity_curve = equity_curve
+            result.equity_curve = equity_curve_serializable
             
             await self.session.commit()
             await self.session.refresh(result)

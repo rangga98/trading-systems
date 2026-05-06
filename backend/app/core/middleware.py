@@ -2,36 +2,36 @@
 
 import time
 
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.core.logging import logger
 
 
-class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    """Log all incoming requests with timing information."""
+class RequestLoggingMiddleware:
+    """Pure ASGI middleware that logs all requests with timing."""
 
-    async def dispatch(self, request: Request, call_next):
+    def __init__(self, app: ASGIApp):
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
         start_time = time.time()
-        
-        # Log request
-        logger.info(
-            f"Request started: {request.method} {request.url.path} "
-            f"from {request.client.host if request.client else 'unknown'}"
-        )
-        
-        response = await call_next(request)
-        
-        # Calculate duration
-        duration = time.time() - start_time
-        
-        # Log response
-        logger.info(
-            f"Request completed: {request.method} {request.url.path} "
-            f"- Status: {response.status_code} - Duration: {duration:.3f}s"
-        )
-        
-        # Add timing header
-        response.headers["X-Request-Duration"] = f"{duration:.3f}"
-        
-        return response
+        path = scope.get("path", "/")
+        method = scope.get("method", "UNKNOWN")
+
+        logger.info(f"Request started: {method} {path}")
+
+        async def send_wrapper(message):
+            if message["type"] == "http.response.start":
+                duration = time.time() - start_time
+                status_code = message.get("status", 0)
+                logger.info(
+                    f"Request completed: {method} {path} "
+                    f"- Status: {status_code} - Duration: {duration:.3f}s"
+                )
+            await send(message)
+
+        await self.app(scope, receive, send_wrapper)

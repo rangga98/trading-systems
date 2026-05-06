@@ -1,6 +1,6 @@
 """Database configuration with async SQLAlchemy."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import DateTime, func
@@ -47,7 +47,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 
     def soft_delete(self) -> None:
         """Mark record as deleted."""
-        self.deleted_at = datetime.utcnow()
+        self.deleted_at = datetime.now(UTC)
 
     def restore(self) -> None:
         """Restore a soft-deleted record."""

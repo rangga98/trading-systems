@@ -4,7 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
 
 
 class BacktestConfigCreate(BaseModel):
@@ -61,9 +61,9 @@ class BacktestConfigResponse(BaseModel):
     id: UUID
     name: str
     ticker: str
-    initial_capital: str
+    initial_capital: Decimal
     position_sizing_type: str
-    position_size_value: str
+    position_size_value: Decimal
     stop_loss_pct: Decimal | None
     take_profit_pct: Decimal | None
     entry_rules: dict
@@ -72,6 +72,10 @@ class BacktestConfigResponse(BaseModel):
     date_range_end: date
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("initial_capital", "position_size_value")
+    def serialize_decimal(self, v: Decimal) -> str:
+        return f"{v:.2f}"
 
 
 class BacktestConfigList(BaseModel):
@@ -89,11 +93,11 @@ class BacktestResultResponse(BaseModel):
     id: UUID
     config_id: UUID
     status: str
-    total_pnl: str | None
+    total_pnl: Decimal | None
     total_return_pct: Decimal | None
     win_rate: Decimal | None
     total_trades: int | None
-    max_drawdown: str | None
+    max_drawdown: Decimal | None
     max_drawdown_pct: Decimal | None
     sharpe_ratio: Decimal | None
     equity_curve: list[dict] | None
@@ -101,6 +105,10 @@ class BacktestResultResponse(BaseModel):
     completed_at: datetime | None
     error_message: str | None
     created_at: datetime
+
+    @field_serializer("total_pnl", "max_drawdown")
+    def serialize_decimal_str(self, v: Decimal | None) -> str | None:
+        return str(v) if v is not None else None
 
 
 class BacktestResultDetail(BacktestResultResponse):

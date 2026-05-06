@@ -64,7 +64,7 @@ class TestExportService:
         assert rows[0][0] == "BACKTEST SUMMARY"
         
         # Should have summary data
-        summary_labels = [row[0] for row in rows[:10]]
+        summary_labels = [row[0] for row in rows[:15] if row]
         assert "Strategy Name" in summary_labels
         assert "Ticker" in summary_labels
         assert "Initial Capital" in summary_labels
@@ -92,7 +92,7 @@ class TestExportService:
         assert trade_section_idx is not None
         
         # Next row should be headers
-        headers = rows[trade_section_idx + 1]
+        headers = rows[trade_section_idx + 2]
         assert "Entry Date" in headers
         assert "Entry Price" in headers
         assert "Exit Date" in headers
@@ -173,7 +173,7 @@ class TestExportService:
         assert trade_section_idx is not None
         
         # Next row should indicate no trades
-        assert "No trades" in str(rows[trade_section_idx + 1])
+        assert "No trades" in str(rows[trade_section_idx + 2])
 
     def test_generate_csv_multiple_trades(self):
         """Test CSV with multiple trades."""

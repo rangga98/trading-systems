@@ -1,6 +1,6 @@
 """Pydantic schemas for OHLCV API."""
 
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -43,13 +43,14 @@ class ImportJobResponse(BaseModel):
     """Response schema for import job status."""
     model_config = ConfigDict(from_attributes=True)
     
-    job_id: UUID
+    id: UUID
     ticker: str
     status: str  # PENDING, RUNNING, COMPLETED, FAILED
     start_date: date
     end_date: date
     records_imported: int | None = None
-    total_records: int | None = None
+    records_skipped: int | None = None
+    records_updated: int | None = None
     error_message: str | None = None
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime

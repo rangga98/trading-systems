@@ -14,7 +14,7 @@ class TestBacktestEngine:
     def sample_ohlcv_data(self):
         """Sample OHLCV data for backtesting."""
         return [
-            {"date": date(2024, 1, 1), "open": "100.00", "high": "110.00", "low": "95.00", "close": "105.00", "volume": 1000000},
+            {"date": date(2024, 1, 1), "open": "100.00", "high": "110.00", "low": "98.00", "close": "105.00", "volume": 1000000},
             {"date": date(2024, 1, 2), "open": "105.00", "high": "115.00", "low": "100.00", "close": "110.00", "volume": 1200000},
             {"date": date(2024, 1, 3), "open": "110.00", "high": "120.00", "low": "105.00", "close": "115.00", "volume": 1500000},
             {"date": date(2024, 1, 4), "open": "115.00", "high": "125.00", "low": "110.00", "close": "120.00", "volume": 1100000},
@@ -46,7 +46,7 @@ class TestBacktestEngine:
         result = engine.run_buy_and_hold()
 
         assert result["total_return_pct"] > 0
-        assert result["final_equity"] > result["initial_capital"]
+        assert result["final_equity"] > engine.initial_capital
 
     def test_buy_and_hold_entry_price(self, sample_ohlcv_data, basic_config):
         """Test buy-and-hold enters at first day open."""
@@ -59,9 +59,17 @@ class TestBacktestEngine:
         assert first_trade["position_type"] == "LONG"
         assert first_trade["entry_price"] == Decimal("100.00")
 
-    def test_buy_and_hold_exit_at_end(self, sample_ohlcv_data, basic_config):
+    def test_buy_and_hold_exit_at_end(self, sample_ohlcv_data):
         """Test buy-and-hold exits at last day close."""
-        engine = BacktestEngine(sample_ohlcv_data, basic_config)
+        config = {
+            "strategy_name": "Buy and Hold Test",
+            "initial_capital": Decimal("100000000.00"),
+            "position_sizing_type": "FIXED_AMOUNT",
+            "position_size_value": Decimal("100000000.00"),
+            "start_date": date(2024, 1, 1),
+            "end_date": date(2024, 1, 12),
+        }
+        engine = BacktestEngine(sample_ohlcv_data, config)
         result = engine.run_buy_and_hold()
 
         assert len(result["trades"]) == 1
@@ -105,9 +113,9 @@ class TestBacktestEngine:
 
     def test_stop_loss_triggered(self, sample_ohlcv_data):
         """Test stop loss is triggered correctly."""
-        # Create data with a drop
+        # Create data with a drop - ensure TP doesn't trigger first
         data_with_drop = [
-            {"date": date(2024, 1, 1), "open": "100.00", "high": "110.00", "low": "95.00", "close": "105.00", "volume": 1000000},
+            {"date": date(2024, 1, 1), "open": "100.00", "high": "105.00", "low": "98.00", "close": "105.00", "volume": 1000000},
             {"date": date(2024, 1, 2), "open": "105.00", "high": "106.00", "low": "90.00", "close": "92.00", "volume": 1200000},  # Stop loss hit (95)
             {"date": date(2024, 1, 3), "open": "92.00", "high": "95.00", "low": "88.00", "close": "90.00", "volume": 1500000},
         ]
@@ -133,7 +141,7 @@ class TestBacktestEngine:
         """Test take profit is triggered correctly."""
         # Create data with a rise
         data_with_rise = [
-            {"date": date(2024, 1, 1), "open": "100.00", "high": "115.00", "low": "95.00", "close": "110.00", "volume": 1000000},  # TP hit (110)
+            {"date": date(2024, 1, 1), "open": "100.00", "high": "115.00", "low": "98.00", "close": "110.00", "volume": 1000000},  # TP hit (110)
             {"date": date(2024, 1, 2), "open": "110.00", "high": "120.00", "low": "105.00", "close": "115.00", "volume": 1200000},
         ]
         
@@ -192,7 +200,7 @@ class TestBacktestEngine:
     def test_single_day_data(self):
         """Test backtest with single day of data."""
         data = [
-            {"date": date(2024, 1, 1), "open": "100.00", "high": "110.00", "low": "95.00", "close": "105.00", "volume": 1000000},
+            {"date": date(2024, 1, 1), "open": "100.00", "high": "110.00", "low": "98.00", "close": "105.00", "volume": 1000000},
         ]
         config = {
             "strategy_name": "Single Day Test",

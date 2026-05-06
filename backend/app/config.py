@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     )
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/trading_sim"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5433/trading_sim"
 
     # Application
     APP_NAME: str = "IDX Trading Simulator"

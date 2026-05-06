@@ -1,5 +1,6 @@
 """Import job service for tracking async operations."""
 
+from datetime import date
 from uuid import UUID
 
 from sqlalchemy import select
@@ -18,8 +19,8 @@ class ImportJobService:
     async def create(
         self,
         ticker: str,
-        start_date: str,
-        end_date: str,
+        start_date: date,
+        end_date: date,
     ) -> ImportJob:
         """Create a new import job."""
         job = ImportJob(

@@ -1,6 +1,6 @@
 """Pydantic schemas for Stock API."""
 
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
@@ -42,8 +42,8 @@ class StockResponse(StockBase):
     has_data: bool = False
     data_count: int = 0
     date_range: StockDateRange | None = None
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class StockListResponse(BaseModel):

@@ -1,9 +1,10 @@
 """Integration tests for Stocks API."""
 
 import pytest
+import uuid
 from datetime import date
 from decimal import Decimal
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from fastapi import status
 
 from app.main import app
@@ -22,7 +23,7 @@ class TestStocksAPI:
 
         app.dependency_overrides[get_db] = override_get_db
 
-        async with AsyncClient(app=app, base_url="http://test") as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             yield client
 
         # Cleanup
@@ -64,7 +65,7 @@ class TestStocksAPI:
         
         response = await async_client.post("/api/v1/stocks", json=stock_data)
         
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     async def test_get_stock_by_ticker(self, async_client):
         """Test getting a stock by ticker."""
@@ -96,8 +97,9 @@ class TestStocksAPI:
         from app.models.ohlcv import OHLCVData
         
         # Create a stock with data
+        stock_id = uuid.uuid4()
         stock = Stock(
-            id="test-stock-1",
+            id=stock_id,
             ticker="TLKM.JK",
             name="Telkom Indonesia",
             sector="Telecommunication",
@@ -105,12 +107,13 @@ class TestStocksAPI:
         test_db_session.add(stock)
         
         ohlcv = OHLCVData(
-            stock_id="test-stock-1",
+            stock_id=stock_id,
             date=date(2024, 1, 15),
             open=Decimal("4000.00"),
             high=Decimal("4100.00"),
             low=Decimal("3900.00"),
             close=Decimal("4050.00"),
+            adj_close=Decimal("4050.00"),
             volume=10000000,
         )
         test_db_session.add(ohlcv)

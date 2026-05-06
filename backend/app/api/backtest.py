@@ -16,6 +16,7 @@ from app.schemas.backtest import (
     BacktestExecuteResponse,
     BacktestResultDetail,
     BacktestResultList,
+    BacktestResultResponse,
 )
 from app.services.backtest_service import BacktestService
 
@@ -45,6 +46,26 @@ async def list_configs(
     return BacktestConfigList(
         total=total,
         items=[BacktestConfigResponse.model_validate(c) for c in configs],
+    )
+
+
+@router.get("/backtests/results", response_model=BacktestResultList)
+async def list_results(
+    config_id: UUID | None = Query(None),
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    session: AsyncSession = Depends(get_db),
+):
+    """List backtest results."""
+    service = BacktestService(session)
+    results, total = await service.list_results(
+        config_id=config_id,
+        limit=limit,
+        offset=offset,
+    )
+    return BacktestResultList(
+        total=total,
+        items=[BacktestResultResponse.model_validate(r) for r in results],
     )
 
 
@@ -102,26 +123,6 @@ async def execute_backtest(
             status="FAILED",
             message=str(e),
         )
-
-
-@router.get("/backtests/results", response_model=BacktestResultList)
-async def list_results(
-    config_id: UUID | None = Query(None),
-    limit: int = Query(50, ge=1, le=100),
-    offset: int = Query(0, ge=0),
-    session: AsyncSession = Depends(get_db),
-):
-    """List backtest results."""
-    service = BacktestService(session)
-    results, total = await service.list_results(
-        config_id=config_id,
-        limit=limit,
-        offset=offset,
-    )
-    return BacktestResultList(
-        total=total,
-        items=[BacktestResultResponse.model_validate(r) for r in results],
-    )
 
 
 @router.get("/backtests/results/{result_id}", response_model=BacktestResultDetail)
