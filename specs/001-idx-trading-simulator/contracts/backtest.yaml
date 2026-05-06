@@ -1,0 +1,408 @@
+# Backtest API Contract
+# Base URL: /api/v1
+
+paths:
+  /backtest-configs:
+    get:
+      summary: List all backtest configurations
+      parameters:
+        - name: ticker
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: List of configurations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BacktestConfigResponse'
+                  total:
+                    type: integer
+
+    post:
+      summary: Create new backtest configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BacktestConfigCreateRequest'
+      responses:
+        201:
+          description: Configuration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestConfigResponse'
+        400:
+          description: Invalid parameters
+        404:
+          description: Stock not found or no OHLCV data available
+
+  /backtest-configs/{config_id}:
+    parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Get configuration details
+      responses:
+        200:
+          description: Configuration details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestConfigResponse'
+        404:
+          description: Configuration not found
+
+    put:
+      summary: Update configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BacktestConfigUpdateRequest'
+      responses:
+        200:
+          description: Updated configuration
+        404:
+          description: Configuration not found
+
+    delete:
+      summary: Delete configuration
+      responses:
+        204:
+          description: Deleted
+
+  /backtest-configs/{config_id}/run:
+    parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    post:
+      summary: Execute backtest
+      description: |
+        Runs the backtest simulation with the given configuration.
+        Returns immediately with result ID; use GET /backtest-results/{id} for status.
+      responses:
+        202:
+          description: Backtest queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestResultResponse'
+        400:
+          description: Configuration invalid or OHLCV data missing
+        404:
+          description: Configuration not found
+
+  /backtest-results:
+    get:
+      summary: List backtest results
+      parameters:
+        - name: config_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum: [executed_at, total_return_pct, sharpe_ratio]
+            default: executed_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        200:
+          description: List of results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BacktestResultResponse'
+
+  /backtest-results/{result_id}:
+    parameters:
+      - name: result_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Get backtest result details
+      description: Includes summary metrics and trade list
+      responses:
+        200:
+          description: Full result with trades
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/BacktestResultResponse'
+                  trades:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradeResponse'
+                  config:
+                    $ref: '#/components/schemas/BacktestConfigResponse'
+        404:
+          description: Result not found
+
+components:
+  schemas:
+    BacktestConfigCreateRequest:
+      type: object
+      required:
+        - name
+        - ticker
+        - initial_capital
+        - position_sizing_type
+        - position_size_value
+        - date_range_start
+        - date_range_end
+      properties:
+        name:
+          type: string
+          example: "BBCA Buy & Hold 2020-2024"
+        ticker:
+          type: string
+          example: BBCA.JK
+        initial_capital:
+          type: string
+          example: "100000000"
+          description: Initial capital in IDR (as string to preserve precision)
+        position_sizing_type:
+          type: string
+          enum: [FIXED_AMOUNT, FIXED_PCT, RISK_BASED]
+        position_size_value:
+          type: number
+          description: |
+            FIXED_AMOUNT: Rupiah amount per trade
+            FIXED_PCT: Percentage of capital (e.g., 10 = 10%)
+            RISK_BASED: Risk amount in Rupiah
+        stop_loss_pct:
+          type: number
+          nullable: true
+          example: 5.0
+          description: Stop loss percentage from entry
+        take_profit_pct:
+          type: number
+          nullable: true
+          example: 10.0
+          description: Take profit percentage from entry
+        entry_rules:
+          type: object
+          default: {"type": "buy_and_hold"}
+        exit_rules:
+          type: object
+          default: {"type": "buy_and_hold"}
+        date_range_start:
+          type: string
+          format: date
+          example: "2020-01-02"
+        date_range_end:
+          type: string
+          format: date
+          example: "2024-12-30"
+
+    BacktestConfigUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        initial_capital:
+          type: number
+        position_sizing_type:
+          type: string
+          enum: [FIXED_AMOUNT, FIXED_PCT, RISK_BASED]
+        position_size_value:
+          type: number
+        stop_loss_pct:
+          type: number
+          nullable: true
+        take_profit_pct:
+          type: number
+          nullable: true
+        entry_rules:
+          type: object
+        exit_rules:
+          type: object
+        date_range_start:
+          type: string
+          format: date
+        date_range_end:
+          type: string
+          format: date
+
+    BacktestConfigResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ticker:
+          type: string
+        initial_capital:
+          type: string
+          description: Decimal as string
+        position_sizing_type:
+          type: string
+        position_size_value:
+          type: string
+        stop_loss_pct:
+          type: number
+          nullable: true
+        take_profit_pct:
+          type: number
+          nullable: true
+        entry_rules:
+          type: object
+        exit_rules:
+          type: object
+        date_range_start:
+          type: string
+          format: date
+        date_range_end:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    BacktestResultResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        total_pnl:
+          type: string
+          nullable: true
+        total_return_pct:
+          type: number
+          nullable: true
+        win_rate:
+          type: number
+          nullable: true
+          description: 0-100 percentage
+        total_trades:
+          type: integer
+          nullable: true
+        max_drawdown:
+          type: string
+          nullable: true
+        max_drawdown_pct:
+          type: number
+          nullable: true
+        sharpe_ratio:
+          type: number
+          nullable: true
+        equity_curve:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              equity:
+                type: string
+        executed_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+
+    TradeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        entry_date:
+          type: string
+          format: date
+        entry_price:
+          type: string
+        exit_date:
+          type: string
+          format: date
+          nullable: true
+        exit_price:
+          type: string
+          nullable: true
+        position_size:
+          type: integer
+        position_type:
+          type: string
+          enum: [LONG, SHORT]
+        pnl:
+          type: string
+          nullable: true
+        pnl_pct:
+          type: number
+          nullable: true
+        exit_reason:
+          type: string
+          enum: [STOP_LOSS, TAKE_PROFIT, END_OF_DATA, SIGNAL]
+          nullable: true
