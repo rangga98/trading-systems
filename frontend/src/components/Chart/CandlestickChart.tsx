@@ -18,6 +18,18 @@ export function CandlestickChart({
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  
+  // Use refs for callbacks and data to prevent unnecessary re-initialization
+  const dataRef = useRef(data)
+  const onCrosshairMoveRef = useRef(onCrosshairMove)
+  const onVisibleTimeRangeChangeRef = useRef(onVisibleTimeRangeChange)
+
+  // Sync refs
+  useEffect(() => {
+    dataRef.current = data
+    onCrosshairMoveRef.current = onCrosshairMove
+    onVisibleTimeRangeChangeRef.current = onVisibleTimeRangeChange
+  }, [data, onCrosshairMove, onVisibleTimeRangeChange])
 
   // Initialize chart
   useEffect(() => {
@@ -68,33 +80,35 @@ export function CandlestickChart({
 
     // Handle crosshair move
     chart.subscribeCrosshairMove((param) => {
-      if (!param.time || !onCrosshairMove) {
-        onCrosshairMove?.(null)
+      if (!param.time || !onCrosshairMoveRef.current) {
+        onCrosshairMoveRef.current?.(null)
         return
       }
 
-      const dataPoint = data.find(
+      const currentData = dataRef.current
+      const dataPoint = currentData.find(
         (d) => new Date(d.date).getTime() / 1000 === param.time
       )
-      onCrosshairMove(dataPoint || null)
+      onCrosshairMoveRef.current(dataPoint || null)
     })
 
     // Handle visible range change
-    if (onVisibleTimeRangeChange) {
-      chart.timeScale().subscribeVisibleTimeRangeChange(() => {
-        const range = chart.timeScale().getVisibleLogicalRange()
-        if (range) {
-          const from = Math.floor(range.from)
-          const to = Math.ceil(range.to)
-          if (data[from] && data[to]) {
-            onVisibleTimeRangeChange(
-              new Date(data[from].date),
-              new Date(data[to].date)
-            )
-          }
+    chart.timeScale().subscribeVisibleTimeRangeChange(() => {
+      if (!onVisibleTimeRangeChangeRef.current) return
+      
+      const range = chart.timeScale().getVisibleLogicalRange()
+      if (range) {
+        const currentData = dataRef.current
+        const from = Math.floor(range.from)
+        const to = Math.ceil(range.to)
+        if (currentData[from] && currentData[to]) {
+          onVisibleTimeRangeChangeRef.current(
+            new Date(currentData[from].date),
+            new Date(currentData[to].date)
+          )
         }
-      })
-    }
+      }
+    })
 
     chartRef.current = chart
     candlestickSeriesRef.current = candlestickSeries
@@ -113,7 +127,7 @@ export function CandlestickChart({
       window.removeEventListener('resize', handleResize)
       chart.remove()
     }
-  }, [data, onCrosshairMove, onVisibleTimeRangeChange])
+  }, []) // Empty dependency array means this only runs once on mount
 
   // Update chart data
   useEffect(() => {
