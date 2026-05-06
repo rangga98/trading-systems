@@ -1,8 +1,9 @@
 import { Suspense, lazy } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, NavLink, Navigate } from 'react-router-dom'
 import { queryClient } from './services/api'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { NotificationList } from './components/NotificationList'
 
 // Pages - Lazy loaded for bundle optimization
 const StockListPage = lazy(() => import('./pages/StockImport/StockListPage').then(m => ({ default: m.StockListPage })))
@@ -80,7 +81,7 @@ function App() {
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto relative">
             <ErrorBoundary>
               <Suspense fallback={<PageLoading />}>
                 <Routes>
@@ -89,12 +90,14 @@ function App() {
                   <Route path="/stocks/import" element={<StockImportPage />} />
                   <Route path="/stocks/:ticker" element={<OHLCVViewPage />} />
                   <Route path="/chart" element={<ChartViewPage />} />
+                  <Route path="/backtest" element={<Navigate to="/backtest/run" replace />} />
                   <Route path="/backtest/run" element={<BacktestRunPage />} />
                   <Route path="/backtest/results" element={<BacktestResultsPage />} />
                   <Route path="/backtest/results/:resultId" element={<BacktestDetailPage />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>
+            <NotificationList />
           </main>
         </div>
       </BrowserRouter>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ohlcvApi } from '../services/ohlcv'
 import { useAppStore } from '../stores/appStore'
+import { Loader2 } from 'lucide-react'
 
 interface StockImportFormProps {
   onSuccess?: () => void
@@ -27,6 +28,15 @@ export function StockImportForm({ onSuccess }: StockImportFormProps) {
       addNotification({
         type: 'error',
         message: 'Format ticker tidak valid. Harus diakhiri dengan .JK (contoh: BBCA.JK)',
+        duration: 5000,
+      })
+      return
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+      addNotification({
+        type: 'warning',
+        message: 'Tanggal mulai tidak boleh lebih besar dari tanggal akhir.',
         duration: 5000,
       })
       return
@@ -130,9 +140,16 @@ export function StockImportForm({ onSuccess }: StockImportFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+        className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center gap-2"
       >
-        {isLoading ? 'Mengimpor...' : 'Impor Data'}
+        {isLoading ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Mengimpor...
+          </>
+        ) : (
+          'Impor Data'
+        )}
       </button>
     </form>
   )
