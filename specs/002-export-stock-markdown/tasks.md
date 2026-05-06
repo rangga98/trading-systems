@@ -15,8 +15,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 [P] Create export utility file in `frontend/src/lib/export-utils.ts`
-- [ ] T002 [P] Create export button component in `frontend/src/components/StockExportButton.tsx`
+- [x] T001 [P] Create export utility file in `frontend/src/lib/export-utils.ts`
+- [x] T002 [P] Create export button component in `frontend/src/components/StockExportButton.tsx`
 
 ---
 
@@ -24,10 +24,10 @@
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [ ] T003 Implement Markdown table generation logic in `frontend/src/lib/export-utils.ts`
-- [ ] T004 Implement multi-file download trigger with delay in `frontend/src/lib/export-utils.ts`
-- [ ] T005 Update `frontend/src/components/DataTable.tsx` to support row selection (checkboxes, select all)
-- [ ] T006 [P] Add selection state management support to `frontend/src/components/DataTable.tsx` via props
+- [x] T003 Implement Markdown table generation logic in `frontend/src/lib/export-utils.ts`
+- [x] T004 Implement multi-file download trigger with delay in `frontend/src/lib/export-utils.ts`
+- [x] T005 Update `frontend/src/components/DataTable.tsx` to support row selection (checkboxes, select all)
+- [x] T006 [P] Add selection state management support to `frontend/src/components/DataTable.tsx` via props
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -41,12 +41,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement selection state management in `frontend/src/pages/StockImport/StockListPage.tsx`
-- [ ] T008 [US1] Pass selection props to `DataTable` in `frontend/src/pages/StockImport/StockListPage.tsx`
-- [ ] T009 [US1] Implement `StockExportButton` with disabled state logic in `frontend/src/components/StockExportButton.tsx`
-- [ ] T010 [US1] Add `StockExportButton` to the header of `frontend/src/pages/StockImport/StockListPage.tsx`
-- [ ] T011 [US1] Connect `StockExportButton` to the export utility in `frontend/src/pages/StockImport/StockListPage.tsx`
-- [ ] T012 [US1] Ensure special characters are escaped in Markdown generation in `frontend/src/lib/export-utils.ts`
+- [x] T007 [US1] Implement selection state management in `frontend/src/pages/StockImport/StockListPage.tsx`
+- [x] T008 [US1] Pass selection props to `DataTable` in `frontend/src/pages/StockImport/StockListPage.tsx`
+- [x] T009 [US1] Implement `StockExportButton` with disabled state logic in `frontend/src/components/StockExportButton.tsx`
+- [x] T010 [US1] Add `StockExportButton` to the header of `frontend/src/pages/StockImport/StockListPage.tsx`
+- [x] T011 [US1] Connect `StockExportButton` to the export utility in `frontend/src/pages/StockImport/StockListPage.tsx`
+- [x] T012 [US1] Ensure special characters are escaped in Markdown generation in `frontend/src/lib/export-utils.ts`
 
 **Checkpoint**: User Story 1 is fully functional and testable independently.
 
@@ -56,9 +56,9 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T013 [P] Update frontend types to ensure `Stock` includes all fields needed for export in `frontend/src/types/index.ts`
-- [ ] T014 Run validation against `specs/002-export-stock-markdown/quickstart.md`
-- [ ] T015 [P] Add loading indicator to export button for large selections in `frontend/src/components/StockExportButton.tsx`
+- [x] T013 [P] Update frontend types to ensure `Stock` includes all fields needed for export in `frontend/src/types/index.ts`
+- [x] T014 Run validation against `specs/002-export-stock-markdown/quickstart.md`
+- [x] T015 [P] Add loading indicator to export button for large selections in `frontend/src/components/StockExportButton.tsx`
 
 ---
 
