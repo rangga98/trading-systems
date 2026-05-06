@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CandlestickChart, TimeframeSelector } from '../../components/Chart'
 import { ohlcvApi } from '../../services/ohlcv'
@@ -26,9 +26,9 @@ export function ChartViewPage() {
     enabled: !!selectedTicker,
   })
 
-  const handleCrosshairMove = (data: OHLCVData | null) => {
+  const handleCrosshairMove = useCallback((data: OHLCVData | null) => {
     setHoverData(data)
-  }
+  }, [])
 
   return (
     <div className="h-full flex flex-col gap-4">
