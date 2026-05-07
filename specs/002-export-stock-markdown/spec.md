@@ -43,6 +43,7 @@ As a user viewing a list of stocks, I want to select specific stocks and export 
 - **FR-005**: System MUST trigger individual browser downloads for each generated `.md` file.
 - **FR-006**: The Markdown table MUST use standard GitHub Flavored Markdown (GFM) syntax for tables.
 - **FR-007**: System MUST escape special Markdown characters in data values to prevent table breakage.
+- **FR-009**: System MUST implement chunked data fetching for exports to ensure full historical data is retrieved even when it exceeds single-request API limits.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -55,7 +56,7 @@ As a user viewing a list of stocks, I want to select specific stocks and export 
 
 - **SC-001**: Users can complete the export process (selection to download) in under 10 seconds.
 - **SC-002**: Generated Markdown files are valid GFM and render correctly in standard viewers (e.g., VS Code, GitHub).
-- **SC-003**: Exported data exactly matches the values displayed in the UI at the time of export.
+- **SC-003**: Exported data exactly matches the values displayed in the UI and MUST include the complete historical range regardless of record count.
 
 ## Assumptions
 

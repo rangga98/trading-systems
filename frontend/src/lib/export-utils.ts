@@ -59,14 +59,31 @@ function downloadFile(content: string, filename: string) {
  */
 export async function exportStocksToMarkdown(stocks: Stock[]) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const CHUNK_SIZE = 1000;
 
   for (const stock of stocks) {
     try {
-      // Fetch historical data for the stock
-      const response = await ohlcvApi.getData(stock.ticker);
-      const historicalData = response.data || [];
+      let allHistoricalData: OHLCVData[] = [];
+      let offset = 0;
+      let totalRecords = 0;
+
+      // Fetch historical data in chunks until all data is retrieved
+      do {
+        const response = await ohlcvApi.getData(stock.ticker, { 
+          limit: CHUNK_SIZE, 
+          offset: offset 
+        });
+        
+        const chunkData = response.data || [];
+        allHistoricalData = [...allHistoricalData, ...chunkData];
+        totalRecords = response.total_records;
+        offset += chunkData.length;
+
+        // Break if no more data is returned to avoid infinite loop
+        if (chunkData.length === 0) break;
+      } while (offset < totalRecords);
       
-      const markdown = generateStockMarkdown(stock, historicalData);
+      const markdown = generateStockMarkdown(stock, allHistoricalData);
       const filename = `${stock.ticker}-export-${timestamp}.md`;
       downloadFile(markdown, filename);
     } catch (error) {

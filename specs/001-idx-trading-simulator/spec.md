@@ -76,7 +76,7 @@ As a trader, I want to export backtest results and trade history to CSV so I can
 - **Concurrent backtests**: How does the system handle multiple simultaneous backtest requests? → Queue or process sequentially with progress indicators.
 - **Invalid money management parameters**: What if user sets stop loss > take profit, or negative capital? → Validate inputs and reject with clear error messages.
 - **Data gaps**: How are missing trading days (holidays, weekends) handled in backtesting? → System should skip non-trading days without breaking calculations.
-- **Large dataset performance**: What happens with 10+ years of daily data? → System should paginate or use virtualized rendering to maintain responsiveness.
+- **Large dataset performance**: What happens with 10+ years of daily data? → System MUST use server-side pagination (FR-013) and chunked fetching (FR-011 in Export) to maintain responsiveness and completeness.
 - **Database connection failure**: How does the system behave if PostgreSQL is unavailable? → Display connection error and offer retry option.
 
 ## Requirements *(mandatory)*
@@ -95,6 +95,7 @@ As a trader, I want to export backtest results and trade history to CSV so I can
 - **FR-010**: System MUST validate all user inputs (ticker symbols, date ranges, money management parameters) and provide clear error messages.
 - **FR-011**: System MUST export backtest results and trade history to CSV format.
 - **FR-012**: System MUST handle IDX-specific market conventions: .JK suffix for tickers, WIB timezone, and Jakarta Stock Exchange holidays.
+- **FR-013**: System MUST support server-side pagination for historical OHLCV data retrieval to maintain performance with large datasets.
 
 ### Key Entities *(include if feature involves data)*
 

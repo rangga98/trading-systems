@@ -246,6 +246,28 @@ For MVP (simple buy-and-hold or price-based):
 ]
 ```
 
+## API Response Patterns
+
+To support large datasets and maintain performance, the application uses a consistent paginated response structure for list and time-series endpoints.
+
+### Paginated Response Structure
+
+```json
+{
+  "items": [...],      // Array of entity objects (Stock, OHLCVDataPoint, etc.)
+  "total": 4015,       // Total number of records available in the database
+  "limit": 100,        // Maximum number of items requested per page
+  "offset": 0,         // Number of items skipped from the beginning
+  "ticker": "BBCA.JK", // (Optional) For ticker-specific data
+  "timeframe": "daily" // (Optional) For aggregated time-series data
+}
+```
+
+**Usage Guidelines**:
+1. **Frontend Display**: MUST use `total` for count labels and pagination control logic.
+2. **Frontend Fetching**: SHOULD use `limit` and `offset` for server-side pagination to minimize payload size.
+3. **Data Export**: MUST use `total` to determine if additional chunks need to be fetched (chunked fetching pattern).
+
 ## Soft Delete Pattern
 
 All entities implement soft delete via `deleted_at`:

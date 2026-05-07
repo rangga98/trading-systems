@@ -45,6 +45,9 @@ async def get_ohlcv_data(
         ticker=ticker,
         timeframe=result["timeframe"],
         count=result["count"],
+        total_records=result["total_records"],
+        limit=result["limit"],
+        offset=result["offset"],
         data=result["data"],
     )
 
