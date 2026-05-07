@@ -22,6 +22,9 @@ class OHLCVResponse(BaseModel):
     ticker: str
     timeframe: str = "daily"
     count: int
+    total_records: int
+    limit: int
+    offset: int
     data: list[OHLCVDataPoint]
 
 

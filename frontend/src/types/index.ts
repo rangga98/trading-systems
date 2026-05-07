@@ -40,6 +40,9 @@ export interface OHLCVResponse {
   ticker: string
   timeframe: 'daily' | 'weekly' | 'monthly'
   count: number
+  total_records: number
+  limit: number
+  offset: number
   data: OHLCVData[]
 }
 

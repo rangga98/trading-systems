@@ -10,6 +10,7 @@ export const ohlcvApi = {
       end_date?: string
       timeframe?: 'daily' | 'weekly' | 'monthly'
       limit?: number
+      offset?: number
     }
   ): Promise<OHLCVResponse> {
     const searchParams = new URLSearchParams()
@@ -17,6 +18,7 @@ export const ohlcvApi = {
     if (params?.end_date) searchParams.append('end_date', params.end_date)
     if (params?.timeframe) searchParams.append('timeframe', params.timeframe)
     if (params?.limit) searchParams.append('limit', String(params.limit))
+    if (params?.offset !== undefined) searchParams.append('offset', String(params.offset))
     
     const query = searchParams.toString()
     const url = query ? `/stocks/${ticker}/ohlcv?${query}` : `/stocks/${ticker}/ohlcv`

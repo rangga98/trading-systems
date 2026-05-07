@@ -1,15 +1,18 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { ohlcvApi } from '../../services/ohlcv'
 import { DataTable } from '../../components/DataTable'
 import type { OHLCVData } from '../../types'
 
 export function OHLCVViewPage() {
   const { ticker } = useParams<{ ticker: string }>()
+  const [page, setPage] = useState(0)
+  const limit = 100
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['ohlcv', ticker],
-    queryFn: () => ohlcvApi.getData(ticker!, { limit: 100 }),
+    queryKey: ['ohlcv', ticker, page],
+    queryFn: () => ohlcvApi.getData(ticker!, { limit, offset: page * limit }),
     enabled: !!ticker,
   })
 
@@ -33,7 +36,7 @@ export function OHLCVViewPage() {
         <div>
           <h1 className="text-2xl font-bold">Data OHLCV: {ticker}</h1>
           <p className="text-muted-foreground">
-            {data?.count || 0} data historis ditemukan
+            {data?.total_records || 0} data historis ditemukan
           </p>
         </div>
         <div className="flex gap-2">
@@ -56,12 +59,36 @@ export function OHLCVViewPage() {
       {error && <p className="text-red-600">Error: {error.message}</p>}
 
       {data && (
-        <DataTable
-          data={data.data}
-          columns={columns}
-          keyExtractor={(item) => `${ticker}-${item.date}`}
-          emptyMessage="Belum ada data untuk saham ini"
-        />
+        <>
+          <DataTable
+            data={data.data}
+            columns={columns}
+            keyExtractor={(item) => `${ticker}-${item.date}`}
+            emptyMessage="Belum ada data untuk saham ini"
+          />
+
+          <div className="flex justify-between items-center pt-4">
+            <p className="text-sm text-muted-foreground">
+              Menampilkan {data.data.length} dari {data.total_records} data
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="px-3 py-1 border rounded disabled:opacity-50"
+              >
+                Sebelumnya
+              </button>
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={(page + 1) * limit >= data.total_records}
+                className="px-3 py-1 border rounded disabled:opacity-50"
+              >
+                Berikutnya
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
